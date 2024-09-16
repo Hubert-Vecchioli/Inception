@@ -20,7 +20,6 @@ services:
     env_file: .env
     depends_on:
       - mariadb
-      - #TBD
     volumes: "wordpress:/var/www/html"
     networks: inception
     restart: on-failure
@@ -35,16 +34,46 @@ services:
     restart: on-failure
 
   redis:
+    image: redis
+    container_name: redis
+    build: ./requirements/bonus/redis
+    depends_on: wordpress
+    env_file: .env
+    networks: inception
+    restart: on-failure
 
   adminer:
+    image: adminer
+    container_name: adminer
+    build: ./requirements/bonus/adminer
+    depends_on: mariadb
+    networks: inception
+    restart: on-failure
 
   ftp:
-
-  #TBD
+    image: ftp
+    container_name: ftp
+    build: ./requirements/bonus/ftp
+    env_file: .env
+    networks: inception
+    ports:
+      -#TBD
+    volumes: "wordpress:/var/www/html"
+    restart: on-failure
 
 volumes:
   mariadb:
+    driver: local
+    driver_opts:
+      type: none
+      devide: /home/hvecchio/data/mysql
+      o: bind
   wordpress:
+    driver: local
+    driver_opts:
+      type: none
+      devide: /home/hvecchio/data/wordpress
+      o: bind
 
 networks:
   inception:
