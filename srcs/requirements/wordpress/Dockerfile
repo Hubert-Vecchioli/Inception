@@ -1,3 +1,4 @@
+#TO BE DELETED https://hub.docker.com/_/wordpress/
 FROM debian:bullseye
 
 RUN apt -y update apt install -y php

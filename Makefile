@@ -15,7 +15,6 @@ END				=	\033[0m
 
 #******************************  RULES  **************************************#
 
-
 all: starts_volumes up
 
 # is $(SRCS) needed? TBD
@@ -43,5 +42,3 @@ clean:
 fclean: clean
 	@sudo rm -rd hvecchio/data/mysql
 	@sudo rm -rd hvecchio/data/wordpress
-
-.PHONY: all re down clean
