@@ -2,7 +2,7 @@ services:
   nginx:
     image: nginx
     container_name: nginx
-    build: ./requiremenets/nginx
+    build: ./requirements/nginx
     env_file:
       - .env
     depends_on:
@@ -19,7 +19,7 @@ services:
   wordpress:
     image: wordpress
     container_name: wordpress
-    build: ./requiremenets/wordpress
+    build: ./requirements/wordpress
     env_file:
       - .env
     depends_on:
@@ -33,7 +33,7 @@ services:
   mariadb:
     image: mariadb
     container_name: mariadb
-    build: ./requiremenets/mariadb
+    build: ./requirements/mariadb
     env_file:
       - .env
     volumes: 
@@ -42,21 +42,22 @@ services:
       - inception
     restart: on-failure
 
-  # redis:
-  #   image: redis
-  #   container_name: redis
-  #   build: ./requirements/bonus/redis
-  #   depends_on: wordpress
-  #   env_file:
-  #  - .env
-  #   networks:
-  #  - inception
-  #   restart: on-failure
+  redis:
+    image: redis
+    container_name: redis
+    build: ./requirements/bonus/redis
+    depends_on: 
+      - wordpress
+    env_file:
+      - .env
+    networks:
+      - inception
+    restart: on-failure
 
   # adminer:
   #   image: adminer
   #   container_name: adminer
-  #   build: ./requirements/bonus/adminer
+  #   build: ./requiremenets/bonus/adminer
   #   depends_on: mariadb
   #   networks:
   #  - inception
@@ -81,13 +82,13 @@ volumes:
     driver: local
     driver_opts:
       type: none
-      devide: /home/hvecchio/data/mysql
+      device: /home/hvecchio/data/mysql
       o: bind
   wordpress:
     driver: local
     driver_opts:
       type: none
-      devide: /home/hvecchio/data/wordpress
+      device: /home/hvecchio/data/wordpress
       o: bind
 
 networks:

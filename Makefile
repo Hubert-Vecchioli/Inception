@@ -15,30 +15,34 @@ END				=	\033[0m
 
 #******************************  RULES  **************************************#
 
-all: starts_volumes up
+all: host starts_volumes up
 
 # is $(SRCS) needed? TBD
 status:
-	docker-compose ps -a
+	@sudo docker compose -f $(SRCS) ps -a
 
 up:
-	docker-compose -f $(SRCS) up -d build
+	@sudo docker compose -f $(SRCS) up -d --build
 
 down:
-	docker-compose -f $(SRCS) down -v --remove-orphans
+	@sudo docker compose -f $(SRCS) down -v --remove-orphans
 
 starts_volumes:
-	@mkdir -p hvecchio/data
-	@mkdir -p hvecchio/data/mysql
-	@mkdir -p hvecchio/data/wordpress
-	@sudo chown -R hvecchio hvecchio/data
-	@sudo chmod -R 777 hvecchio/data
+	mkdir -p /home/hvecchio/data
+	mkdir -p /home/hvecchio/data/mysql
+	mkdir -p /home/hvecchio/data/wordpress
+	sudo chown -R hvecchio /home/hvecchio/data
+	sudo chmod -R 777 /home/hvecchio/data
+
+host:
+	echo "127.0.0.1 hvecchio.42.fr" | sudo tee -a /etc/hosts > /dev/null;
 
 re: down up
 
 clean:
-	docker-compose -f $(SRCS) down -v --remove-orphans --rmi all
+	sudo docker compose -f $(SRCS) down -v --remove-orphans --rmi all
 
 fclean: clean
-	@sudo rm -rd hvecchio/data/mysql
-	@sudo rm -rd hvecchio/data/wordpress
+	sudo rm -rd /home/hvecchio/data/mysql
+	sudo rm -rd /home/hvecchio/data/wordpress
+	sudo rm -rd /home/hvecchio/data

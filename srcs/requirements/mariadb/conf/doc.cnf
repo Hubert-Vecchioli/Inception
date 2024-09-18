@@ -1,4 +1,0 @@
-[mysqld]
-user            = mysql
-bind-address    = ${MARIADB_ADRRESS}
-port            = ${MARIADB_PORT}

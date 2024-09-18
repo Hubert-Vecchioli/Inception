@@ -1,16 +1,25 @@
 FROM debian:bullseye
 
-RUN apt update -y && apt upgarde -y && apt-get install -y mariadb-server mariadb-client
-RUN	mkdir -p /var/run/mysql && chown -R mysql:mysql /var/run/mysql && chown -R mysql:mysql /etc/mysql
+# INSTALL DEPENDENCIES
+RUN		apt update -y && \
+		apt upgrade -y && \
+		apt-get install -y \
+			mariadb-server \
+			mariadb-client && \
+		mkdir -p /var/run/mysqld && \
+		chown -R mysql:mysql /var/run/mysqld && \
+		chown -R mysql:mysql /etc/mysql
 
-## TO BE DELETED: https://hub.docker.com/_/mariadb/
+COPY	./conf/50-server.cnf /etc/mysql/mariadb.conf.d/50-server.cnf
+COPY	./conf/init.sql /tmp/init.sql
+COPY	./tools/script.sh /tmp/script.sh
 
-COPY ./conf/doc.cnf /etc/mysql/mariadb.conf.d/doc.cnf
-COPY ./conf/init.sql /tmp/init.sql
-COPY tools/script.sh /home/script.sh
+RUN		chown -R mysql:mysql /etc/mysql && \
+		chown -R mysql:mysql /tmp/
 
-RUN chown -R mysql:mysql /etc/mysql
-RUN chown -R mysql:mysql /tmp/
-RUN chmod +x /home/script.sh
+# Not supposed to be exposed to the host machine
+# EXPOSE	3306
 
-ENTRYPOINT [ "sh", "/tmp/script.sh" ]
+USER	mysql
+
+ENTRYPOINT	["sh", "/tmp/script.sh"]
