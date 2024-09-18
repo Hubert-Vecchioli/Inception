@@ -3,63 +3,79 @@ services:
     image: nginx
     container_name: nginx
     build: ./requiremenets/nginx
-    env_file: .env
+    env_file:
+      - .env
     depends_on:
       - mariadb
       - wordpress
-      - #TBD
-    ports: 443:443
-    volumes: "wordpress:/var/www/html"
-    networks: inception
+#TBD if other are needed
+    ports:
+      - 443:443
+    volumes: 
+      - wordpress:/var/www/html
+    networks:
+      - inception
     restart: on-failure
 
   wordpress:
     image: wordpress
     container_name: wordpress
     build: ./requiremenets/wordpress
-    env_file: .env
+    env_file:
+      - .env
     depends_on:
       - mariadb
-    volumes: "wordpress:/var/www/html"
-    networks: inception
+    volumes: 
+      - wordpress:/var/www/html
+    networks:
+      - inception
     restart: on-failure
 
   mariadb:
     image: mariadb
     container_name: mariadb
     build: ./requiremenets/mariadb
-    env_file: .env
-    volumes: "mariadb:/var/lib/mysql"
-    networks: inception
+    env_file:
+      - .env
+    volumes: 
+      - mariadb:/var/lib/mysql
+    networks:
+      - inception
     restart: on-failure
 
-  redis:
-    image: redis
-    container_name: redis
-    build: ./requirements/bonus/redis
-    depends_on: wordpress
-    env_file: .env
-    networks: inception
-    restart: on-failure
+  # redis:
+  #   image: redis
+  #   container_name: redis
+  #   build: ./requirements/bonus/redis
+  #   depends_on: wordpress
+  #   env_file:
+  #  - .env
+  #   networks:
+  #  - inception
+  #   restart: on-failure
 
-  adminer:
-    image: adminer
-    container_name: adminer
-    build: ./requirements/bonus/adminer
-    depends_on: mariadb
-    networks: inception
-    restart: on-failure
+  # adminer:
+  #   image: adminer
+  #   container_name: adminer
+  #   build: ./requirements/bonus/adminer
+  #   depends_on: mariadb
+  #   networks:
+  #  - inception
+  #   restart: on-failure
 
-  ftp:
-    image: ftp
-    container_name: ftp
-    build: ./requirements/bonus/ftp
-    env_file: .env
-    networks: inception
-    ports:
-      -#TBD
-    volumes: "wordpress:/var/www/html"
-    restart: on-failure
+  # ftp:
+  #   image: ftp
+  #   container_name: ftp
+  #   build: ./requirements/bonus/ftp
+  #   env_file:
+  #  - .env
+  #   networks:
+  #  - inception
+  #   ports:
+  #     -#TBD
+  #   volumes: 
+  #  - wordpress:/var/www/html
+  #   restart: on-failure
 
 volumes:
   mariadb:
@@ -77,4 +93,4 @@ volumes:
 
 networks:
   inception:
-    driver: #TBD
+    driver: bridge

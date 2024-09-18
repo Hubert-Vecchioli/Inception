@@ -1,3 +1,1 @@
-FROM debian:Bullseye
-
-RUN
+FROM debian:bullseye
