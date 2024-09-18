@@ -1,6 +1,6 @@
 #!/bin/bash
 
-PHP_VERSION=$(php -v | head -n 1 | cut -d " " -f 2 | cut -d "." -f 1,2)
+PHP_VERSION=7.4
 # echo "PHP_VERSION: ${PHP_VERSION}"
 
 # Move the configuration file to the correct location
