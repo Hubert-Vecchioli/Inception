@@ -19,13 +19,12 @@ services:
       - 443:443
     volumes: 
       - wordpress:/var/www/html
-      # - static:/usr/share/nginx/html
     networks:
       - inception
     restart: on-failure
 
   wordpress:
-    image: wordpress:42
+    image: wordpress
     container_name: wordpress
     init: true
     build:
@@ -50,11 +49,6 @@ services:
     build:
       context: ./requirements/mariadb
       dockerfile: Dockerfile
-      args:
-        - MYSQL_DATABASE
-        - MYSQL_USER
-        - MYSQL_PASSWORD
-        - MYSQL_ROOT_PASSWORD
     volumes: 
       - mariadb:/var/lib/mysql
     networks:
