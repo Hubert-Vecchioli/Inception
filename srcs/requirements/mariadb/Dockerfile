@@ -1,16 +1,32 @@
-FROM debian:bullseye
+# Base image
+FROM        debian:bullseye
 
-RUN	apt update -y && apt upgrade -y && apt-get install -y mariadb-server mariadb-client
-RUN	mkdir -p /var/run/mysqld
-RUN	chown -R mysql:mysql /var/run/mysqld && chown -R mysql:mysql /etc/mysql
+# Define build arguments passed from docker-compose.yml
+ARG         MYSQL_DATABASE
+ARG         MYSQL_USER
+ARG         MYSQL_PASSWORD
+ARG         MYSQL_ROOT_PASSWORD
 
-COPY ./conf/50-server.cnf /etc/mysql/mariadb.conf.d/50-server.cnf
-COPY ./conf/init.sql /tmp/init.sql
-COPY ./tools/entrypoint.sh /tmp/entrypoint.sh
+# Update and upgrade system & install MariaDB
+RUN         apt -y update && apt -y upgrade
+RUN         apt -y install mariadb-server mariadb-client
 
-RUN	chown -R mysql:mysql /etc/mysql && \
-RUN	chown -R mysql:mysql /tmp/
+#allow mysqld daemon to run, purge and recreate /var/lib/mysql with appropriate ownership
+RUN			mkdir -p /var/lib/mysql /var/run/mysqld
+RUN			chown -R mysql:mysql /var/lib/mysql /var/run/mysqld
+RUN			chmod 777 /var/run/mysqld
 
-USER	mysql
+# Copy the MariaDB configuration file and dump.sql file
+COPY        ./conf/mariadb.cnf /etc/mysql/mariadb.conf.d/
+RUN         chmod 644 /etc/mysql/mariadb.conf.d/mariadb.cnf
+COPY        ./conf/dump.sql /usr/local/bin/
 
-ENTRYPOINT	["sh", "/tmp/entrypoint.sh"]
+# Execute MariaDB Initialization script
+COPY        ./tools/init.sh /usr/local/bin/
+RUN         bash /usr/local/bin/init.sh
+
+# Expose port to the host
+EXPOSE      3306
+
+# Run MariaDB
+ENTRYPOINT  [ "mysqld_safe" ]

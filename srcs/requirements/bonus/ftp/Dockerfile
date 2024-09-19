@@ -1,8 +1,25 @@
-FROM debian:bullseye
+# Base image
+FROM        debian:bullseye
 
-# INSTALL DEPENDENCIES
-RUN apt update -y && apt install -y vsftpd
+# Define build arguments passed from docker-compose.yml
+ARG         FTP_USER
+ARG         FTP_PASSWORD
 
-COPY ./tools/script.sh /tmp/script.sh
+# Set environment variables
+ENV         FTP_USER=${FTP_USER}
+ENV         FTP_PASSWORD=${FTP_PASSWORD}
 
-ENTRYPOINT ["sh", "/tmp/script.sh"]
+# Update and upgrade system & install FTP
+RUN         apt -y update && apt -y upgrade
+RUN         apt -y install vsftpd ftp
+
+# Set up FTP
+COPY        ./conf/vsftpd.conf /usr/local/bin/
+COPY        ./tools/init.sh /usr/local/bin/
+RUN         chmod 755 /usr/local/bin/init.sh
+
+# Expose port
+EXPOSE      20 21 21100-21110
+
+# Run FTP
+ENTRYPOINT  [ "bash", "/usr/local/bin/init.sh" ]
