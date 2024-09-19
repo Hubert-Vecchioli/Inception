@@ -40,6 +40,13 @@ services:
       - mariadb:/var/lib/mysql
     networks:
       - inception
+    environment:
+      - WORDPRESS_DB_NAME=${WORDPRESS_DB_NAME}
+      - WORDPRESS_DB_USER=${WORDPRESS_DB_USER}
+      - WORDPRESS_DB_PASSWORD=${WORDPRESS_DB_PASSWORD}
+      - MARIADB_PASSWORD=${MARIADB_PASSWORD}
+      - MARIADB_PORT=${MARIADB_PORT}
+      - MARIADB_ADRRESS=${MARIADB_ADRRESS}
     restart: on-failure
 
   redis:
@@ -54,28 +61,65 @@ services:
       - inception
     restart: on-failure
 
-  # adminer:
-  #   image: adminer
-  #   container_name: adminer
-  #   build: ./requiremenets/bonus/adminer
-  #   depends_on: mariadb
-  #   networks:
-  #  - inception
-  #   restart: on-failure
+  adminer:
+    image: adminer
+    container_name: adminer
+    build: ./requiremenets/bonus/adminer
+    depends_on: mariadb
+    networks:
+      - inception
+    restart: on-failure
 
-  # ftp:
-  #   image: ftp
-  #   container_name: ftp
-  #   build: ./requirements/bonus/ftp
-  #   env_file:
-  #  - .env
+  ftp:
+    image: ftp
+    container_name: ftp
+    build: ./requirements/bonus/ftp
+    env_file:
+      - .env
+    networks:
+      - inception
+    ports:
+      - 21:21
+      - 21000-21010:21000-21010
+    volumes: 
+      - wordpress:/var/www/html
+    restart: on-failure
+
+  #   prometheus:
+  #   container_name: 42prometheus
+  #   build:
+  #     context: ./bonus/prometheus
+  #   image: 42_prometheus
+  #   volumes:
+  #     - monitoring-volume:/monitor
   #   networks:
-  #  - inception
-  #   ports:
-  #     -#TBD
-  #   volumes: 
-  #  - wordpress:/var/www/html
-  #   restart: on-failure
+  #     - monitoring-network
+  #   environment:
+  #     - CADVISOR_PORT=${CADVISOR_PORT}
+  #     - PROMETHEUS_PORT=${PROMETHEUS_PORT}
+  #   command:
+  #     - '--config.file=/etc/prometheus/prometheus.yml'
+  #     - '--storage.tsdb.path=/monitor/prometheus'
+  #     - '--storage.tsdb.retention=200h'
+  #     - '--web.listen-address=:${PROMETHEUS_PORT}'
+  #   restart: unless-stopped
+
+  # grafana:
+  #   container_name: 42grafana
+  #   build:
+  #     context: ./bonus/grafana
+  #   image: 42_grafana
+  #   volumes:
+  #     - monitoring-volume:/monitor
+  #   networks:
+  #       - nginx-network
+  #       - monitoring-network
+  #   environment:
+  #     - PROMETHEUS_PORT=${PROMETHEUS_PORT}
+  #     - GF_AUTH_DISABLE_LOGIN_FORM=true
+  #     - GF_AUTH_ANONYMOUS_ENABLED=true
+  #     - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+  #   restart: unless-stopped
 
 volumes:
   mariadb:
