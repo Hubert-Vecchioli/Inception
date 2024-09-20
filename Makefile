@@ -30,7 +30,6 @@ starts_volumes:
 	mkdir -p /home/hvecchio/data
 	mkdir -p /home/hvecchio/data/mysql
 	mkdir -p /home/hvecchio/data/wordpress
-	mkdir -p /home/hvecchio/data/ftp
 	sudo chown -R hvecchio /home/hvecchio/data
 	sudo chmod -R 777 /home/hvecchio/data
 

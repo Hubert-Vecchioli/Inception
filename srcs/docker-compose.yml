@@ -74,25 +74,6 @@ services:
       - inception
     restart: on-failure
 
-  ftp:
-    image: ftp
-    container_name: ftp
-    init: true
-    build:
-      context: ./requirements/bonus/ftp
-      dockerfile: Dockerfile
-    networks:
-      - inception
-    volumes:
-      - wordpress:/home/hvecchio/ftp
-    ports:
-      - "20:20"
-      - "21:21"
-      - "21000-21010:21000-21010"
-    restart: on-failure
-    depends_on:
-      - nginx
-
 volumes:
   mariadb:
     driver: local
