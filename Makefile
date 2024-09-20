@@ -15,9 +15,8 @@ END				=	\033[0m
 
 #******************************  RULES  **************************************#
 
-all: host starts_volumes up
+all: hosts starts_volumes up
 
-# is $(SRCS) needed? TBD
 status:
 	@sudo docker compose -f $(SRCS) ps -a
 
@@ -35,14 +34,16 @@ starts_volumes:
 	sudo chown -R hvecchio /home/hvecchio/data
 	sudo chmod -R 777 /home/hvecchio/data
 
-host:
-	echo "127.0.0.1 hvecchio.42.fr" | sudo tee -a /etc/hosts > /dev/null;
-	echo "127.0.0.1 adminer.hvecchio.42.fr" | sudo tee -a /etc/hosts > /dev/null;
+hosts:
+	sudo chmod 777 /etc/hosts
+	sudo echo "127.0.0.1 hvecchio.42.fr" >> /etc/hosts
+	sudo echo "127.0.0.1 adminer.hvecchio.42.fr" >> /etc/hosts
 
 re: down up
 
 clean:
 	sudo docker compose -f $(SRCS) down -v --remove-orphans --rmi all
+	sudo sed -i '/127\.0\.0\.1\t${USER}\.42\.fr/d' /etc/hosts
 
 fclean: clean
 	sudo rm -rd /home/hvecchio/data/mysql

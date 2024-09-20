@@ -1,16 +1,11 @@
-# Base image
-FROM        debian:bullseye
+FROM debian:bullseye
 
-# Update and upgrade system & install wget and php
-RUN         apt -y update && apt -y upgrade
-RUN         apt -y install wget php7.4 php7.4-fpm
+RUN	apt -y update && \
+	apt install -y \
+		wget \
+		php \
+		php-mysql
 
-# Expose port 9000
-EXPOSE      9000
+COPY ./tools/script.sh /tmp/script.sh
 
-# Copy Entrypoint script
-COPY        ./tools/entrypoint.sh /usr/local/bin/
-RUN         chmod 755 /usr/local/bin/entrypoint.sh
-
-# Run php-fpm
-ENTRYPOINT  [ "bash", "/usr/local/bin/entrypoint.sh" ]
+ENTRYPOINT ["sh", "/tmp/script.sh"]

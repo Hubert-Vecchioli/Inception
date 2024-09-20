@@ -1,48 +1,12 @@
-# Base image
-FROM        debian:bullseye
+FROM debian:bullseye
 
-# Define build arguments passed from docker-compose.yml
-ARG         MYSQL_DATABASE
-ARG         MYSQL_USER
-ARG         MYSQL_PASSWORD
+RUN apt -y update apt install -y php
+RUN apt install -y php-fpm php-mysql php-cli php-mbstring mariadb-client curl
+RUN	apt-get install -y php php-cgi php-fpm php-mysql mariadb-client && mkdir -p /run/php
 
-# Update and upgrade system & install MariaDB client, php-fpm and php-mysql and wget
-RUN         apt -y update && apt -y upgrade
-RUN         apt -y install php7.4-fpm php7.4-mysql mariadb-client wget tar
+COPY	./tools/script.sh /tmp/script.sh
+COPY	./conf/www.conf /tmp/www.conf
 
-##################  BONUS  ##################
-################ Redis Cache ################
-RUN         apt -y install php7.4-redis redis-tools
+RUN		chmod 755 /tmp/script.sh
 
-# Configure PHP so it can communicate with NGINX
-RUN         mv /etc/php/7.4/fpm/pool.d/www.conf /etc/php/7.4/fpm/pool.d/www.conf.default
-COPY        ./conf/www.conf /etc/php/7.4/fpm/pool.d/
-RUN         ln -s $(find /usr/sbin -name 'php-fpm*') /usr/bin/php-fpm
-
-# Expose port
-EXPOSE      9000
-
-# Create PID directory for PHP-FPM
-RUN         mkdir -p /run/php
-RUN         chmod 755 /run/php
-
-# Execute Wordpress Initialization script
-COPY        ./tools/init.sh /usr/local/bin/
-RUN         chmod 755 /usr/local/bin/init.sh
-RUN         bash /usr/local/bin/init.sh
-
-# Copy Wordpress customized content
-RUN         mkdir -p /var/www/html/wp-content/uploads/2024/02/
-COPY        ./conf/uploads/* /var/www/html/wp-content/uploads/2024/02/
-RUN         chmod -R 755 /var/www/html/wp-content/uploads/
-RUN         chmod 644 /var/www/html/wp-content/uploads/2024/02/*
-RUN         chown -R www-data:www-data /var/www/html/wp-content/uploads/
-RUN 		chown -R www-data:www-data /var/www/html/
-RUN 		chmod -R 755 /var/www/html/
-
-# Copy Entrypoint script
-COPY        ./tools/entrypoint.sh /usr/local/bin/
-RUN         chmod 755 /usr/local/bin/entrypoint.sh
-
-# Run php-fpm
-ENTRYPOINT  [ "bash", "/usr/local/bin/entrypoint.sh" ]
+ENTRYPOINT	["sh", "/tmp/script.sh"]

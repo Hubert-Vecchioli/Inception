@@ -6,17 +6,11 @@ services:
     build:
       context: ./requirements/nginx
       dockerfile: Dockerfile
-      args:
-        - DOMAIN_NAME
-        - CERTS_KEY
-        - CERTS_CRT
-    env_file:
-      - .env
     depends_on:
       - mariadb
       - wordpress
     ports:
-      - 443:443
+      - "443:443"
     volumes: 
       - wordpress:/var/www/html
     networks:
@@ -30,10 +24,6 @@ services:
     build:
       context: ./requirements/wordpress
       dockerfile: Dockerfile
-      args:
-        - MYSQL_DATABASE
-        - MYSQL_USER
-        - MYSQL_PASSWORD
     depends_on:
       - mariadb
     volumes: 
@@ -91,9 +81,6 @@ services:
     build:
       context: ./requirements/bonus/ftp
       dockerfile: Dockerfile
-      args:
-        - FTP_USER
-        - FTP_PASSWORD
     networks:
       - inception
     volumes:
@@ -105,38 +92,6 @@ services:
     restart: on-failure
     depends_on:
       - nginx
-
-  # static:
-  #   container_name: static
-  #   image: static
-  #   init: true
-  #   build:
-  #     context: ./requirements/bonus/static
-  #     dockerfile: Dockerfile
-  #   networks:
-  #     - inception
-  #   volumes:
-  #     - static:/usr/src/app
-  #   restart: on-failure
-
-  #   prometheus:
-  #   container_name: 42prometheus
-  #   build:
-  #     context: ./bonus/prometheus
-  #   image: 42_prometheus
-  #   volumes:
-  #     - monitoring-volume:/monitor
-  #   networks:
-  #     - monitoring-network
-  #   environment:
-  #     - CADVISOR_PORT=${CADVISOR_PORT}
-  #     - PROMETHEUS_PORT=${PROMETHEUS_PORT}
-  #   command:
-  #     - '--config.file=/etc/prometheus/prometheus.yml'
-  #     - '--storage.tsdb.path=/monitor/prometheus'
-  #     - '--storage.tsdb.retention=200h'
-  #     - '--web.listen-address=:${PROMETHEUS_PORT}'
-  #   restart: unless-stopped
 
 volumes:
   mariadb:
@@ -151,10 +106,8 @@ volumes:
       type: none
       device: /home/hvecchio/data/wordpress
       o: bind
-  # static:
-  #   name: static
-  #   external: true
 
 networks:
   inception:
+    name: inception
     driver: bridge
