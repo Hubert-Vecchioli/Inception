@@ -1,6 +1,5 @@
 FROM debian:bullseye
 
-# INSTALL DEPENDENCIES
 RUN		apt update -y && \
 		apt upgrade -y && \
 		apt-get install -y \
@@ -16,9 +15,6 @@ COPY	./tools/script.sh /tmp/script.sh
 
 RUN		chown -R mysql:mysql /etc/mysql && \
 		chown -R mysql:mysql /tmp/
-
-# Not supposed to be exposed to the host machine
-# EXPOSE	3306
 
 USER	mysql
 

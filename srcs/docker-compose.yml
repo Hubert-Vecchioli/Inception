@@ -1,6 +1,5 @@
 services:
   nginx:
-    image: nginx
     container_name: nginx
     build: ./requirements/nginx
     env_file:
@@ -17,7 +16,6 @@ services:
     restart: on-failure
 
   wordpress:
-    image: wordpress
     container_name: wordpress
     build: ./requirements/wordpress
     env_file:
@@ -31,7 +29,6 @@ services:
     restart: on-failure
 
   mariadb:
-    image: mariadb
     container_name: mariadb
     build: ./requirements/mariadb
     env_file:
@@ -43,7 +40,6 @@ services:
     restart: on-failure
 
   redis:
-    image: redis
     container_name: redis
     build: ./requirements/bonus/redis
     depends_on: 
@@ -54,28 +50,20 @@ services:
       - inception
     restart: on-failure
 
-  # adminer:
-  #   image: adminer
-  #   container_name: adminer
-  #   build: ./requiremenets/bonus/adminer
-  #   depends_on: mariadb
-  #   networks:
-  #  - inception
-  #   restart: on-failure
-
-  # ftp:
-  #   image: ftp
-  #   container_name: ftp
-  #   build: ./requirements/bonus/ftp
-  #   env_file:
-  #  - .env
-  #   networks:
-  #  - inception
-  #   ports:
-  #     -#TBD
-  #   volumes: 
-  #  - wordpress:/var/www/html
-  #   restart: on-failure
+  adminer:
+      container_name: adminer
+      init: true
+      build:
+        context: ./requirements/bonus/adminer
+        dockerfile: Dockerfile
+      volumes:
+        - wordpress:/var/www/html
+      depends_on:
+        - mariadb
+        - wordpress
+      networks:
+        - inception
+      restart: on-failure
 
 volumes:
   mariadb:

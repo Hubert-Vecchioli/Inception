@@ -3,7 +3,7 @@ FROM debian:bullseye
 # INSTALL DEPENDENCIES
 RUN		apt -y update && \
 		apt install -y php && \
-		PHP_VERSION=$(php -v | head -n 1 | cut -d " " -f 2 | cut -d "." -f 1,2) && \
+		PHP_VERSION=7.4 && \
 		apt install -y \
 			php-fpm \
 			php-mysql \
@@ -11,13 +11,13 @@ RUN		apt -y update && \
 			php-mbstring \
 			mariadb-client \
 			curl && \
-		rm -rf /etc/php/${PHP_VERSION}/fpm/pool.d/www.conf && \
+		rm -rf /etc/php/7.4/fpm/pool.d/www.conf && \
 		mkdir -p /run/php
 
 # LAUNCH SCRIPT
 COPY	./tools/script.sh /tmp/script.sh
 COPY	./conf/www.conf /tmp/www.conf
-# COPY	./conf/www.conf /etc/php/${PHP_VERSION}/fpm/pool.d/www.conf
+# COPY	./conf/www.conf /etc/php/7.4/fpm/pool.d/www.conf
 
 RUN		chmod 755 /tmp/script.sh
 

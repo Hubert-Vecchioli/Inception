@@ -1,12 +1,11 @@
 #!/bin/bash
 
 PHP_VERSION=7.4
-# echo "PHP_VERSION: ${PHP_VERSION}"
 
 # Move the configuration file to the correct location
-mv /tmp/www.conf /etc/php/${PHP_VERSION}/fpm/pool.d/www.conf
+mv /tmp/www.conf /etc/php/7.4/fpm/pool.d/www.conf
 
-sed -i 's|{{WORDPRESS_PORT}}|'${WORDPRESS_PORT}'|g' /etc/php/${PHP_VERSION}/fpm/pool.d/www.conf
+sed -i 's|{{WORDPRESS_PORT}}|'${WORDPRESS_PORT}'|g' /etc/php/7.4/fpm/pool.d/www.conf
 
 if [ -f "$WORDPRESS_PATH/wp-config.php" ]; then
 	echo "WordPress already installed"
@@ -30,4 +29,4 @@ else
 	wp redis enable --allow-root
 fi
 
-/usr/sbin/php-fpm${PHP_VERSION} -F
+/usr/sbin/php-fpm7.4 -F
