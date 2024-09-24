@@ -60,7 +60,6 @@ services:
         - wordpress:/var/www/html
       depends_on:
         - mariadb
-        - wordpress
       networks:
         - inception
       restart: on-failure

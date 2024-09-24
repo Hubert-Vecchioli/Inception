@@ -1,6 +1,7 @@
 #!/bin/sh
 
 mkdir -p $WORDPRESS_PATH
+chown -R www-data:www-data /var/www/html
 chown -R www-data:www-data $WORDPRESS_PATH
 
 # SSL certificate
