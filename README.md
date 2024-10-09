@@ -1,3 +1,3 @@
-Development of a multi-container infrastructure with Docker to deploy a secure web application. The project involved creating distinct services for NGINX, WordPress, MariaDB and Adminer as well as setting up Docker volumes for data persistence and a Docker network for communication between the services.
+Development of a multi-container infrastructure with Docker to deploy a secure web application. The project involved creating distinct services for NGINX, WordPress, MariaDB, Redis and Adminer as well as setting up Docker volumes for data persistence and a Docker network for communication between the services.
 
 Use `make` to initiate the deployment. Your wordpress website will be reachable on `hvecchio.42.fr` (a security warning is expected because of the self-signed certificate) and you can manage the DB manually on `adminer.hvecchio.42.fr` (logins in the .env file).
